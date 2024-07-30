@@ -1,0 +1,301 @@
+---
+title: "Working Draft Final"
+author: "Nolan"
+date: "2023-04-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+### Laoding Dataset ###
+pancreas <- read.csv("Pancreas2.csv", header = TRUE)
+df_pancreas <- select(pancreas, -c(sample_id, patient_cohort, sample_origin, age, sex, diagnosis, ))
+```
+
+
+```{r}
+### Visualizing & Shapiro Test for normal Creatinine ###
+
+# Creating visual for normal data 
+Cmodel <- lm(df_pancreas$creatinine ~ df_pancreas$Group)
+
+qqnorm(Cmodel$residuals, main = "QQ Plot for Normal Creatinine Data")
+qqline(Cmodel$residuals)
+
+# shapiro wilk for creatinine 
+#shapiro test 
+result <- shapiro.test(Cmodel$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+```
+
+
+```{r}
+### Tranforming creatinine data, visualizing data and shapiro test ###
+
+# box cox transformation 
+bc <- boxcox(df_pancreas$creatinine ~ df_pancreas$Group)
+(lambda <- bc$x[which.max(bc$y)])
+
+newC_model <- lm(((df_pancreas$creatinine^lambda-1)/lambda) ~ df_pancreas$Group)
+
+# QQ plot visual 
+qqnorm(newC_model$residuals, main = "QQ Plot for Transformed Creatinine Data")
+qqline(newC_model$residuals)
+
+# Shapiro wilk test 
+
+result <- shapiro.test(newC_model$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+
+#Adding transformed data to the dataset 
+transformed_creatinine <- ((df_pancreas$creatinine^lambda-1)/lambda)
+df_pancreas$transformed_creatinine <- transformed_creatinine 
+```
+
+
+```{r}
+### Visualizing & Shapiro Test for LYVE1 ###
+
+# Creating visual for normal data 
+Lmodel <- lm(df_pancreas$LYVE1 ~ df_pancreas$Group)
+
+qqnorm(Lmodel$residuals, main = "QQ Plot for Normal LYVE1 Data")
+qqline(Lmodel$residuals)
+
+# shapiro wilk for LYVE1 
+#shapiro test 
+result <- shapiro.test(Lmodel$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+```
+```{r}
+### Tranforming LYVE1 data, visualizing data and shapiro test ###
+
+# box cox transformation 
+bc <- boxcox(df_pancreas$LYVE1 ~ df_pancreas$Group)
+(lambda <- bc$x[which.max(bc$y)])
+
+newL_model <- lm(((df_pancreas$LYVE1^lambda-1)/lambda) ~ df_pancreas$Group)
+
+# QQ plot visual 
+qqnorm(newL_model$residuals, main = "QQ Plot for Transformed LYVE1 Data")
+qqline(newL_model$residuals)
+
+# Shapiro wilk test 
+
+result <- shapiro.test(newL_model$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+
+```
+
+
+```{r}
+### Visualizing & Shapiro Test for normal REG1B ###
+
+# Creating visual for normal data 
+Rmodel <- lm(df_pancreas$REG1B ~ df_pancreas$Group)
+
+qqnorm(Rmodel$residuals, main = "QQ Plot for Normal REG1B Data")
+qqline(Rmodel$residuals)
+
+# shapiro wilk for REG1B 
+#shapiro test 
+result <- shapiro.test(Rmodel$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+```
+```{r}
+### Tranforming REG1B data, visualizing data and shapiro test ###
+
+# box cox transformation 
+bc <- boxcox(df_pancreas$REG1B ~ df_pancreas$Group)
+(lambda <- bc$x[which.max(bc$y)])
+
+newR_model <- lm(((df_pancreas$REG1B^lambda-1)/lambda) ~ df_pancreas$Group)
+
+# QQ plot visual 
+qqnorm(newR_model$residuals, main = "QQ Plot for Transformed REG1B Data")
+qqline(newR_model$residuals)
+
+# Shapiro wilk test 
+
+result <- shapiro.test(newR_model$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+
+# Adding Transformed data to dataset 
+transformed_REG1B <- ((df_pancreas$REG1B^lambda-1)/lambda)
+df_pancreas$transformed_REG1B <- transformed_REG1B
+```
+```{r}
+### Visualizing & Shapiro Test for normal TFF1 ###
+
+# Creating visual for normal data 
+Tmodel <- lm(df_pancreas$TFF1 ~ df_pancreas$Group)
+
+qqnorm(Tmodel$residuals, main = "QQ Plot for Normal TFF1 Data")
+qqline(Tmodel$residuals)
+
+# shapiro wilk for TFF1 
+#shapiro test 
+result <- shapiro.test(Tmodel$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+```
+
+
+```{r}
+### Tranforming REG1B data, visualizing data and shapiro test ###
+
+# box cox transformation 
+bc <- boxcox(df_pancreas$TFF1 ~ df_pancreas$Group)
+(lambda <- bc$x[which.max(bc$y)])
+
+newT_model <- lm(((df_pancreas$TFF1^lambda-1)/lambda) ~ df_pancreas$Group)
+
+# QQ plot visual 
+qqnorm(newT_model$residuals, main = "QQ Plot for Transformed TFF1 Data")
+qqline(newT_model$residuals)
+
+# Shapiro wilk test 
+
+result <- shapiro.test(newT_model$residuals)
+p_value <- result$p.value 
+
+#print results 
+cat("shapiro-wilk test for normality\n")
+cat("Test Statistic: ", result$statistic, "\n")
+cat("p-value: ", p_value, "\n")
+
+if (p_value < 0.05) {
+  cat("The Data is not normally distributed.\n")
+} else {
+  cat("The data is normally distributed.\n")
+}
+```
+```{r}
+# One way ANOVA on regular creatinine 
+creatinine_oneway <- aov(creatinine ~ Group, data = df_pancreas)
+summary(creatinine_oneway)
+
+# Bonferroni Compairison for Creatinine 
+with(df_pancreas, pairwise.t.test(creatinine, Group, p.adjust.method = "bonferroni"))
+
+## Boxplot visualizing biomarker difference levels 
+ggplot(df_pancreas) + 
+  geom_boxplot(aes(x = Group, y = creatinine))
+```
+```{r}
+# One way ANOVA on LYVE1 
+LYVE1_anova <- aov(LYVE1 ~ Group, data = df_pancreas)
+summary(LYVE1_anova)
+
+# Bonferroni Comparison for LYVE1 
+with(df_pancreas, pairwise.t.test(LYVE1, Group, p.adjust.method = "bonferroni"))
+
+## Boxplot visualizing biomarker difference levels 
+ggplot(df_pancreas) + 
+  geom_boxplot(aes(x = Group, y = LYVE1))
+```
+```{r}
+## ANOVA  on REG1B ## 
+REG1B_anova <- aov(REG1B ~ Group, data = df_pancreas)
+summary(REG1B_anova)
+
+#Bonferroni Comparison for REG1B
+with(df_pancreas, pairwise.t.test(REG1B, Group, p.adjust.method = "bonferroni"))
+
+## Boxplot visualizing biomarker difference levels 
+ggplot(df_pancreas) + 
+  geom_boxplot(aes(x = Group, y = REG1B))
+```
+```{r}
+## ANOVA on TFF1 
+
+# One way Anova on TFF1 
+TFF1_anova <- aov(TFF1 ~ Group, data = df_pancreas)
+summary(TFF1_anova)
+
+#Bonferroni Compairison for TFF1 
+with(df_pancreas, pairwise.t.test(TFF1, Group, p.adjust.method = "bonferroni"))
+
+## Boxplot visualizing biomarker difference levels 
+ggplot(df_pancreas) + 
+  geom_boxplot(aes(x = Group, y = TFF1))
+```
